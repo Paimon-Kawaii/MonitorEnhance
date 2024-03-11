@@ -52,6 +52,7 @@ public class Plugin : BaseUnityPlugin {
     */
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        _onPlanet = false;
         if (PlanetUtil.IsPlanet(scene))
         {
             GameObject monitorScreen = StartOfRound.Instance?.mapScreen?.mesh.gameObject;

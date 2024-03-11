@@ -251,6 +251,7 @@ public class ScreenScript : MonoBehaviour
         if(_tpCoolDown < 0) _tpCoolDown = 0;
 
         PlayerControllerB player = LOCAL_PLAYER;
+        player.isGrabbingObjectAnimation = false;
         if (!Plugin.IsActive) return;
 
         _lookingAtMonitor = IsLookingAtMonitor();
@@ -286,11 +287,6 @@ public class ScreenScript : MonoBehaviour
                     $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_ALT_QUICKSWITCH)}] 切换雷达视图\n"
                 );
             }
-        }
-        else
-        {
-            player.isGrabbingObjectAnimation = false;
-            _lookingAtMonitor = false;
         }
     }
 }
