@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using GameNetcodeStuff;
+using MonitorEnhance.Utils;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using static UnityEngine.GraphicsBuffer;
 
 namespace MonitorEnhance;
 
@@ -55,37 +53,6 @@ public class ScreenScript : MonoBehaviour
     //    );
     //}
 
-    internal void TriggerTrap()
-    {
-        if (!(Plugin.IsActive && _lookingAtMonitor)) return;
-
-        TransformAndName target = RADAR_TARGET;
-        if (target is null) return;
-        if (target.isNonPlayer) return;
-
-        PlayerControllerB player = target.transform.GetComponent<PlayerControllerB>();
-        if(player is null) return;
-
-        Vector2 pVec = new Vector2(target.transform.position.x, target.transform.position.y);
-        TerminalAccessibleObject[] traps = FindObjectsOfType<TerminalAccessibleObject>();
-        foreach (TerminalAccessibleObject trap in traps)
-        {
-            Vector2 tVec = new Vector2(trap.transform.position.x, trap.transform.position.y);
-            float distance = (pVec - tVec).magnitude;
-            Plugin.LOGGER.LogInfo($"> [{trap.objectCode}] 与 {player.name} 距离: {distance}");
-            if(distance <= player.grabDistance * 2.5f)
-                trap.CallFunctionFromTerminal();
-        }
-    }
-
-    internal void TriggerRadar(RadarBoosterItem rItem, bool isSecondary)
-    {
-        if (rItem is null) return;
-
-        if (isSecondary) rItem.FlashAndSync();
-        else rItem.PlayPingAudioAndSync();
-    }
-
     internal void OnPlayerInteraction(bool isSecondary)
     {
         if (!(Plugin.IsActive && _lookingAtMonitor)) return;
@@ -99,7 +66,7 @@ public class ScreenScript : MonoBehaviour
         if (target.isNonPlayer)
             TriggerRadar(target.transform.GetComponent<RadarBoosterItem>(), isSecondary);
         else if (!isSecondary) Teleport();
-        else EmergencyTeleport();
+        else TriggerTrap();
 
         #region 原逻辑
             //if (player != null && IsLookingAtMonitor(out Bounds bounds, out Ray lookRay, out Ray camRay))
@@ -139,7 +106,15 @@ public class ScreenScript : MonoBehaviour
             #endregion
     }
 
-    internal void Teleport(bool isInverse = false)
+    private void TriggerRadar(RadarBoosterItem rItem, bool isSecondary)
+    {
+        if (rItem is null) return;
+
+        if (isSecondary) rItem.FlashAndSync();
+        else rItem.PlayPingAudioAndSync();
+    }
+
+    private void Teleport(bool isInverse = false)
     {
         ShipTeleporter[] shipTeleporters = FindObjectsOfType<ShipTeleporter>();
         ShipTeleporter shipTeleporter = shipTeleporters.Where(x => x.isInverseTeleporter == isInverse).FirstOrDefault();
@@ -156,6 +131,30 @@ public class ScreenScript : MonoBehaviour
         shipTeleporter.PressTeleportButtonOnLocalClient();
     }
 
+    private void TriggerTrap()
+    {
+        if (!(Plugin.IsActive && _lookingAtMonitor)) return;
+
+        TransformAndName target = RADAR_TARGET;
+        if (target is null) return;
+        if (target.isNonPlayer) return;
+
+        PlayerControllerB player = target.transform.GetComponent<PlayerControllerB>();
+        if (player is null) return;
+
+        Vector2 pVec = new Vector2(target.transform.position.x, target.transform.position.y);
+        TerminalAccessibleObject[] traps = FindObjectsOfType<TerminalAccessibleObject>();
+        foreach (TerminalAccessibleObject trap in traps)
+        {
+            Vector2 tVec = new Vector2(trap.transform.position.x, trap.transform.position.y);
+            float distance = (pVec - tVec).magnitude;
+            Plugin.LOGGER.LogInfo($"> [{trap.objectCode}] 与 {player.name} 距离: {distance}");
+            if (distance <= player.grabDistance * 4f)
+                trap.CallFunctionFromTerminal();
+        }
+    }
+
+#if DEBUG
     internal void EmergencyTeleport()
     {
         if (_tpCoolDown > 0) return;
@@ -163,13 +162,17 @@ public class ScreenScript : MonoBehaviour
         TransformAndName target = RADAR_TARGET;
         PlayerControllerB player = target?.transform.GetComponent<PlayerControllerB>();
         if (player is null) return;
-        if (LOCAL_PLAYER is null) return;
 
-        player.TeleportPlayer(LOCAL_PLAYER.transform.position);
+        StartCoroutine(TeleportPlayerCoroutine((int)player.playerClientId, LOCAL_PLAYER.transform.position));
+
         _tpCoolDown = 20f;
+#if DEBUG
+            _tpCoolDown = 2f;
+#endif
     }
+#endif
 
-    public void ShipDoor()
+    internal void ShipDoor()
     {
         if (!(Plugin.IsActive && _lookingAtMonitor)) return;
 
@@ -258,12 +261,14 @@ public class ScreenScript : MonoBehaviour
         if (_lookingAtMonitor)
         {
             player.isGrabbingObjectAnimation = true; // Blocks the default code from overwriting it again
+#if DEBUG
             if (ConfigUtil.CONFIG_SHOW_POINTER.Value)
             {
                 // Display Pointer
                 player.cursorIcon.enabled = true;
                 player.cursorIcon.sprite = ConfigUtil.HOVER_ICON;
             }
+#endif
             if (ConfigUtil.CONFIG_SHOW_TOOLTIP.Value)
             {
                 // Display Tooltips
@@ -272,19 +277,19 @@ public class ScreenScript : MonoBehaviour
 
                 player.cursorTip.text = string.Format(
                     $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_DOOR_SWITCH)}] " +
-                        (StartOfRound.Instance.hangarDoorsClosed ? "开启" : "关闭") + "舱门\n" +
-                    $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_QUICKSWITCH)} & 0-9] 切换玩家视图\n" +
+                        (StartOfRound.Instance.hangarDoorsClosed ? LocalizationManager.GetString("Open") : LocalizationManager.GetString("Close")) +
+                        " " + LocalizationManager.GetString("ShipDoor") + "\n" +
+
+                    $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_QUICKSWITCH)} & 0-9] "+ LocalizationManager.GetString("SwitchPlayer") + "\n" +
 
                     $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_PRIMARY)}] " +
-                        (target.isNonPlayer ? "雷达发声" : "传送玩家") + "\n" +
+                        (target.isNonPlayer ? LocalizationManager.GetString("PingRadar") : LocalizationManager.GetString("TPPlayer")) + "\n" +
+
 
                     $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_SECONDARY)}] " +
-                        (target.isNonPlayer ? "雷达闪光" : "紧急传送" +
-                        (_tpCoolDown > 0 ? $"({_tpCoolDown:F2}s)" : "(可用)")) + "\n" +
+                        (target.isNonPlayer ? LocalizationManager.GetString("FlashRadar") : LocalizationManager.GetString("TriggerTrap")) + "\n" +
 
-                    $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_TRAP_TRIGGER)}] 关闭附近机关\n"+
-
-                    $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_ALT_QUICKSWITCH)}] 切换雷达视图\n"
+                    $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_ALT_QUICKSWITCH)}] " + LocalizationManager.GetString("SwitchRadar") + "\n"
                 );
             }
         }

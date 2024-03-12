@@ -1,19 +1,16 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Bootstrap;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 namespace MonitorEnhance;
 
 [BepInProcess("Lethal Company.exe")]
-[BepInPlugin("Paimon-Kawaii_MonitorEnhance", "MonitorEnhance", "2024.03.11")]
+[BepInPlugin("Paimon-Kawaii_MonitorEnhance", "MonitorEnhance", "2024.03.12")]
 [BepInDependency("LethalExpansion", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("com.github.lethalmods.lethalexpansioncore", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("ShaosilGaming.GeneralImprovements", BepInDependency.DependencyFlags.SoftDependency)]

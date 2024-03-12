@@ -132,12 +132,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compatibility\MonitorEnhanceInputClass.cs" />
+    <Compile Include="Lang\en_US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>en_US.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Lang\zh_CN.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>zh_CN.resx</DependentUpon>
+    </Compile>
     <Compile Include="MapCameraExtension.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenScript.cs" />
     <Compile Include="Utils\ConfigUtil.cs" />
     <Compile Include="Utils\InputUtil.cs" />
+    <Compile Include="Utils\LocalizationManager.cs" />
     <Compile Include="Utils\PlanetUtil.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +157,16 @@
     <Content Include="Images\HoverIcon.png" />
     <Content Include="Images\icon.png" />
     <Content Include="Images\MonitorHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Lang\en_US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>en_US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Lang\zh_CN.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>zh_CN.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

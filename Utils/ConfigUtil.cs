@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using BepInEx;
 using BepInEx.Configuration;
+using MonitorEnhance.Utils;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -29,10 +30,10 @@ public static class ConfigUtil
     {
         get; private set;
     }
-    public static ConfigEntry<string> CONFIG_TRAP_TRIGGER
-    {
-        get; private set;
-    }
+    //public static ConfigEntry<string> CONFIG_TRAP_TRIGGER
+    //{
+    //    get; private set;
+    //}
     public static ConfigEntry<string> CONFIG_ALT_QUICK_SWITCH
     {
         get; private set;
@@ -49,14 +50,17 @@ public static class ConfigUtil
     {
         get; private set;
     }
-    private static bool _config_ignore_override = false;
-    public static bool IGNORE_OVERRIDE
+    public static ConfigEntry<string> CONFIG_LANGUAGE
     {
-        get => _config_ignore_override;
+        get; private set;
     }
+
+    public static bool IGNORE_OVERRIDE { get; private set; } = false;
 
     internal static void Setup(ConfigFile config, string pluginFolder)
     {
+        // Language
+        CONFIG_LANGUAGE = config.Bind("Config", "Languge", "en_US", "Mod languge");
         // Keybinds
         CONFIG_PRIMARY = config.Bind(
             "Layout", "Primary",
@@ -98,16 +102,16 @@ public static class ConfigUtil
             For in depth instructions see: https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/api/UnityEngine.InputSystem.InputControlPath.html
             """
         );
-        CONFIG_TRAP_TRIGGER = config.Bind(
-            "Layout", "DoorSwitch",
-            "<Keyboard>/leftAlt",
-            """
-            Name of the key mapping for the trap trigger action
-            Allowed value format: "<Keyboard>/KEY", "<Mouse>/BUTTON", "<Gamepad>/BUTTON"
-            Examples: "<Keyboard>/g" "<Mouse>/rightButton" "<Gamepad>/buttonWest"
-            For in depth instructions see: https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/api/UnityEngine.InputSystem.InputControlPath.html
-            """
-        );
+        //CONFIG_TRAP_TRIGGER = config.Bind(
+        //    "Layout", "DoorSwitch",
+        //    "<Keyboard>/leftAlt",
+        //    """
+        //    Name of the key mapping for the trap trigger action
+        //    Allowed value format: "<Keyboard>/KEY", "<Mouse>/BUTTON", "<Gamepad>/BUTTON"
+        //    Examples: "<Keyboard>/g" "<Mouse>/rightButton" "<Gamepad>/buttonWest"
+        //    For in depth instructions see: https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/api/UnityEngine.InputSystem.InputControlPath.html
+        //    """
+        //);
         CONFIG_ALT_REVERSE = config.Bind(
             "Layout", "ReverseSwitch",
             true,
@@ -130,7 +134,7 @@ public static class ConfigUtil
         );
 
         // Image
-        _config_ignore_override = config.Bind(
+        IGNORE_OVERRIDE = config.Bind(
             "Features", "IgnoreOverride",
             false,
             """
@@ -164,6 +168,7 @@ public static class ConfigUtil
             """, pluginFolder)
         );
 
+        LocalizationManager.SetLanguage(CONFIG_LANGUAGE.Value);
         // Try to resolve imagePath to full path
         string iconPath;
         if (imagePath.Value.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || imagePath.Value.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))

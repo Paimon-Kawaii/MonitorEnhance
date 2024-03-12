@@ -2,7 +2,6 @@ using BepInEx;
 using BepInEx.Bootstrap;
 using UnityEngine.SceneManagement;
 
-
 namespace MonitorEnhance;
 
 public static class PlanetUtil

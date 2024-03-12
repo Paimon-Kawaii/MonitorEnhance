@@ -42,12 +42,12 @@ public class MonitorEnhanceInputClass : LcInputActions
         set => InputUtil.INPUT_DOOR_SWITCH = value;
     }
 
-    [InputAction("<Keyboard>/leftAlt", ActionId = "MonitorEnhance:TrapTrigger", Name = "TrapTrigger")]
-    public InputAction TRAP_TRIGGER
-    {
-        get => InputUtil.INPUT_TRAP_TRIGGER;
-        set => InputUtil.INPUT_TRAP_TRIGGER = value;
-    }
+    //[InputAction("<Keyboard>/leftAlt", ActionId = "MonitorEnhance:TrapTrigger", Name = "TrapTrigger")]
+    //public InputAction TRAP_TRIGGER
+    //{
+    //    get => InputUtil.INPUT_TRAP_TRIGGER;
+    //    set => InputUtil.INPUT_TRAP_TRIGGER = value;
+    //}
 
     [InputAction("<Keyboard>/1", ActionId = "MonitorEnhance:QuickSwitch1", Name = "QuickSwitch Player1")]
     public InputAction QUICK_SWITCH_1
