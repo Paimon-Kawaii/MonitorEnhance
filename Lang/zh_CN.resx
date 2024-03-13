@@ -123,11 +123,23 @@
   <data name="FlashRadar" xml:space="preserve">
     <value>雷达闪光</value>
   </data>
+  <data name="LeftAlt" xml:space="preserve">
+    <value>左Alt</value>
+  </data>
+  <data name="LeftButton" xml:space="preserve">
+    <value>左键</value>
+  </data>
+  <data name="LeftShift" xml:space="preserve">
+    <value>左Shift</value>
+  </data>
   <data name="Open" xml:space="preserve">
     <value>开启</value>
   </data>
   <data name="PingRadar" xml:space="preserve">
     <value>雷达发声</value>
+  </data>
+  <data name="RightButton" xml:space="preserve">
+    <value>右键</value>
   </data>
   <data name="ShipDoor" xml:space="preserve">
     <value>舱门</value>

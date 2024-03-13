@@ -8,23 +8,17 @@ public class LocalizationManager
 {
     private static ResourceManager resourceManager;
 
-    private static Dictionary<string, Type> languages = new Dictionary<string, Type>
+    public static Dictionary<string, Type> Languages { get; set; } = new()
     {
         { "en_us", typeof(en_US) },
         { "zh_cn", typeof(zh_CN) }
     };
 
-    public static Dictionary<string, Type> Languages
-    {
-        get => languages;
-        set => languages = value;
-    }
-
     public static void SetLanguage(string language)
     {
-        if (Languages.ContainsKey(language))
+        if (Languages.ContainsKey(language.ToLower()))
         {
-            resourceManager = new ResourceManager(Languages[language]);
+            resourceManager = new ResourceManager(Languages[language.ToLower()]);
         }
         else
         {

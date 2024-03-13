@@ -79,6 +79,33 @@ namespace MonitorEnhance.Lang {
         }
         
         /// <summary>
+        ///   查找类似 LeftAlt 的本地化字符串。
+        /// </summary>
+        internal static string LeftAlt {
+            get {
+                return ResourceManager.GetString("LeftAlt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 LMB 的本地化字符串。
+        /// </summary>
+        internal static string LeftButton {
+            get {
+                return ResourceManager.GetString("LeftButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 LeftShift 的本地化字符串。
+        /// </summary>
+        internal static string LeftShift {
+            get {
+                return ResourceManager.GetString("LeftShift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Open 的本地化字符串。
         /// </summary>
         internal static string Open {
@@ -93,6 +120,15 @@ namespace MonitorEnhance.Lang {
         internal static string PingRadar {
             get {
                 return ResourceManager.GetString("PingRadar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 RMB 的本地化字符串。
+        /// </summary>
+        internal static string RightButton {
+            get {
+                return ResourceManager.GetString("RightButton", resourceCulture);
             }
         }
         

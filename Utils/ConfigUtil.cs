@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using BepInEx;
 using BepInEx.Configuration;
+using GeneralImprovements;
 using MonitorEnhance.Utils;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -168,7 +169,9 @@ public static class ConfigUtil
             """, pluginFolder)
         );
 
-        LocalizationManager.SetLanguage(CONFIG_LANGUAGE.Value);
+        bool flag  =CONFIG_LANGUAGE.Value.IsNullOrWhiteSpace();
+        Plugin.LOGGER.LogInfo($"[me] ”Ô—‘: {CONFIG_LANGUAGE.Value}");
+        LocalizationManager.SetLanguage(flag? System.Globalization.CultureInfo.InstalledUICulture.Name: CONFIG_LANGUAGE.Value);
         // Try to resolve imagePath to full path
         string iconPath;
         if (imagePath.Value.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || imagePath.Value.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))

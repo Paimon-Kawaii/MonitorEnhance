@@ -1,6 +1,7 @@
 using System;
 using BepInEx;
 using BepInEx.Bootstrap;
+using MonitorEnhance.Utils;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
 
@@ -87,12 +88,12 @@ public static class InputUtil
         return (splits.Length > 1 ? path : "") switch
         {
             // Mouse
-            "<Mouse>/leftButton" => "鼠标左键",  // Uses 'Greek Capital Letter Mu' for M
-            "<Mouse>/rightButton" => "鼠标右键", // Uses 'Greek Capital Letter Mu' for M
+            "<Mouse>/leftButton" => LocalizationManager.GetString("LeftButton"),  // Uses 'Greek Capital Letter Mu' for M
+            "<Mouse>/rightButton" => LocalizationManager.GetString("RightButton"), // Uses 'Greek Capital Letter Mu' for M
             // Keyboard
             "<Keyboard>/escape" => "ESC",
-            "<Keyboard>/leftShift" => "左Shift",
-            "<Keyboard>/leftAlt" => "左Alt",
+            "<Keyboard>/leftShift" => LocalizationManager.GetString("LeftShift"),
+            "<Keyboard>/leftAlt" => LocalizationManager.GetString("LeftAlt"),
             // Controller
             // Right buttons
             "<Gamepad>/buttonNorth" => isPS ? "△" : "Y",

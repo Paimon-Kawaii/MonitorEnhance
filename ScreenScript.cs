@@ -69,41 +69,41 @@ public class ScreenScript : MonoBehaviour
         else TriggerTrap();
 
         #region 原逻辑
-            //if (player != null && IsLookingAtMonitor(out Bounds bounds, out Ray lookRay, out Ray camRay))
-            //{
-            //    foreach (Collider x in Physics.OverlapCapsule(camRay.GetPoint(0), camRay.GetPoint(10), _isCloseMax))
-            //    {
-            //        if (!isPlayer && x.GetComponent<TerminalAccessibleObject>() is TerminalAccessibleObject tObject)
-            //        {
-            //            // Clicked on BigDoor, Land mine, Turret
-            //            tObject.CallFunctionFromTerminal();
-            //            return;
-            //        }
-            //        else if (x.GetComponent<RadarBoosterItem>() is RadarBoosterItem rItem)
-            //        {
-            //            // Clicked on Radar booster
-            //            TriggerRadar(rItem, isPlayer);
-            //            return;
-            //        }
-            //        else if (x.GetComponent<PlayerControllerB>() is PlayerControllerB tgtPlayer)
-            //        {
-            //            // Clicked on player or radar the player is holding
-            //            if (!TriggerRadar(tgtPlayer.currentlyHeldObjectServer?.GetComponent<RadarBoosterItem>(), isPlayer) && !isPlayer)
-            //            {
-            //                List<TransformAndName> list = MAP_RENDERER.radarTargets;
-            //                for (int i = 0; i < list.Count; i++)
-            //                {
-            //                    if (tgtPlayer.transform.Equals(list[i].transform))
-            //                    {
-            //                        MAP_RENDERER.SwitchRadarTargetAndSync(i);
-            //                        return;
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-            #endregion
+        //if (player != null && IsLookingAtMonitor(out Bounds bounds, out Ray lookRay, out Ray camRay))
+        //{
+        //    foreach (Collider x in Physics.OverlapCapsule(camRay.GetPoint(0), camRay.GetPoint(10), _isCloseMax))
+        //    {
+        //        if (!isPlayer && x.GetComponent<TerminalAccessibleObject>() is TerminalAccessibleObject tObject)
+        //        {
+        //            // Clicked on BigDoor, Land mine, Turret
+        //            tObject.CallFunctionFromTerminal();
+        //            return;
+        //        }
+        //        else if (x.GetComponent<RadarBoosterItem>() is RadarBoosterItem rItem)
+        //        {
+        //            // Clicked on Radar booster
+        //            TriggerRadar(rItem, isPlayer);
+        //            return;
+        //        }
+        //        else if (x.GetComponent<PlayerControllerB>() is PlayerControllerB tgtPlayer)
+        //        {
+        //            // Clicked on player or radar the player is holding
+        //            if (!TriggerRadar(tgtPlayer.currentlyHeldObjectServer?.GetComponent<RadarBoosterItem>(), isPlayer) && !isPlayer)
+        //            {
+        //                List<TransformAndName> list = MAP_RENDERER.radarTargets;
+        //                for (int i = 0; i < list.Count; i++)
+        //                {
+        //                    if (tgtPlayer.transform.Equals(list[i].transform))
+        //                    {
+        //                        MAP_RENDERER.SwitchRadarTargetAndSync(i);
+        //                        return;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+        #endregion
     }
 
     private void TriggerRadar(RadarBoosterItem rItem, bool isSecondary)
@@ -207,7 +207,7 @@ public class ScreenScript : MonoBehaviour
     {
         if (!(Plugin.IsActive && _lookingAtMonitor)) return;
 
-        if(InputUtil.INPUT_QUICKSWITCH_1.IsPressed())
+        if (InputUtil.INPUT_QUICKSWITCH_1.IsPressed())
             MAP_RENDERER.SwitchRadarTargetByNum(1);
         else if (InputUtil.INPUT_QUICKSWITCH_2.IsPressed())
             MAP_RENDERER.SwitchRadarTargetByNum(2);
@@ -251,7 +251,7 @@ public class ScreenScript : MonoBehaviour
     private void Update()
     {
         _tpCoolDown -= Time.deltaTime;
-        if(_tpCoolDown < 0) _tpCoolDown = 0;
+        if (_tpCoolDown < 0) _tpCoolDown = 0;
 
         PlayerControllerB player = LOCAL_PLAYER;
         player.isGrabbingObjectAnimation = false;
@@ -275,22 +275,20 @@ public class ScreenScript : MonoBehaviour
                 TransformAndName target = RADAR_TARGET;
                 if (target is null) return;
 
-                player.cursorTip.text = string.Format(
-                    $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_DOOR_SWITCH)}] " +
+                player.cursorTip.text =
+                    $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_DOOR_SWITCH)} ] " +
                         (StartOfRound.Instance.hangarDoorsClosed ? LocalizationManager.GetString("Open") : LocalizationManager.GetString("Close")) +
                         " " + LocalizationManager.GetString("ShipDoor") + "\n" +
 
-                    $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_QUICKSWITCH)} & 0-9] "+ LocalizationManager.GetString("SwitchPlayer") + "\n" +
+                    $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_QUICKSWITCH)} & 0-9 ] " + LocalizationManager.GetString("SwitchPlayer") + "\n" +
 
-                    $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_PRIMARY)}] " +
-                        (target.isNonPlayer ? LocalizationManager.GetString("PingRadar") : LocalizationManager.GetString("TPPlayer")) + "\n" +
+                    $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_PRIMARY)} ] " +
+                                            (target.isNonPlayer ? LocalizationManager.GetString("PingRadar") : LocalizationManager.GetString("TPPlayer")) + "\n" +
 
+                    $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_SECONDARY)} ] " +
+                            (target.isNonPlayer ? LocalizationManager.GetString("FlashRadar") : LocalizationManager.GetString("TriggerTrap")) + "\n" +
 
-                    $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_SECONDARY)}] " +
-                        (target.isNonPlayer ? LocalizationManager.GetString("FlashRadar") : LocalizationManager.GetString("TriggerTrap")) + "\n" +
-
-                    $"[{InputUtil.GetButtonDescription(InputUtil.INPUT_ALT_QUICKSWITCH)}] " + LocalizationManager.GetString("SwitchRadar") + "\n"
-                );
+                    $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_ALT_QUICKSWITCH)} ] " + LocalizationManager.GetString("SwitchRadar") + "\n";
             }
         }
     }

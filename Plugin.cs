@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 namespace MonitorEnhance;
 
 [BepInProcess("Lethal Company.exe")]
-[BepInPlugin("Paimon-Kawaii_MonitorEnhance", "MonitorEnhance", "2024.03.12")]
+[BepInPlugin("Paimon-Kawaii_MonitorEnhance", "MonitorEnhance", "2024.03.13")]
 [BepInDependency("LethalExpansion", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("com.github.lethalmods.lethalexpansioncore", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("ShaosilGaming.GeneralImprovements", BepInDependency.DependencyFlags.SoftDependency)]

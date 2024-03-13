@@ -48,7 +48,7 @@ internal static class MapCameraExtension
     public static int GetNextRadarIdx(this ManualCameraRenderer renderer)
     {
         bool isNonPlayer = renderer.GetCurrentRadarTarget().isNonPlayer;
-        for (int i = isNonPlayer ? (renderer.targetTransformIndex < renderer.radarTargets.Count - 1 ? renderer.targetTransformIndex + 1 : 0) : 0; i <= renderer.radarTargets.Count; i++)
+        for (int i = isNonPlayer ? (renderer.targetTransformIndex < renderer.radarTargets.Count - 1 ? renderer.targetTransformIndex + 1 : 0) : 0; i < renderer.radarTargets.Count; i++)
         {
             var trans = renderer.radarTargets[i];
             if (trans?.transform.gameObject.activeSelf == true && trans?.isNonPlayer == true)
