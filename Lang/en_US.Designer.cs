@@ -133,6 +133,15 @@ namespace MonitorEnhance.Lang {
         }
         
         /// <summary>
+        ///   查找类似 Select current target 的本地化字符串。
+        /// </summary>
+        internal static string SelectTarget {
+            get {
+                return ResourceManager.GetString("SelectTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 ShipDoor 的本地化字符串。
         /// </summary>
         internal static string ShipDoor {
@@ -169,7 +178,7 @@ namespace MonitorEnhance.Lang {
         }
         
         /// <summary>
-        ///   查找类似 Close traps 的本地化字符串。
+        ///   查找类似 Close clicked trap 的本地化字符串。
         /// </summary>
         internal static string TriggerTrap {
             get {

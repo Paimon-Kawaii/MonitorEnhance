@@ -141,6 +141,9 @@
   <data name="RightButton" xml:space="preserve">
     <value>右键</value>
   </data>
+  <data name="SelectTarget" xml:space="preserve">
+    <value>选择当前目标</value>
+  </data>
   <data name="ShipDoor" xml:space="preserve">
     <value>舱门</value>
   </data>
@@ -154,6 +157,6 @@
     <value>传送玩家</value>
   </data>
   <data name="TriggerTrap" xml:space="preserve">
-    <value>关闭附近机关</value>
+    <value>关闭被点机关</value>
   </data>
 </root>

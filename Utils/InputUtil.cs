@@ -34,7 +34,7 @@ public static class InputUtil
     // Inputs
     internal static InputAction INPUT_PRIMARY;
     internal static InputAction INPUT_SECONDARY;
-    //internal static InputAction INPUT_TRAP_TRIGGER;
+    internal static InputAction INPUT_SELECT_TARGET;
     internal static InputAction INPUT_QUICKSWITCH;
     internal static InputAction INPUT_DOOR_SWITCH;
     internal static InputAction INPUT_ALT_QUICKSWITCH;
@@ -55,7 +55,7 @@ public static class InputUtil
     private static Execute _primaryExecute = () => { };
     private static Execute _secondaryExecute = () => { };
     private static Execute _doorSwitchExecute = () => { };
-    //private static Execute _trapTriggerExecute = () => { };
+    private static Execute _selectTargetExecute = () => { };
     private static Execute _playerSwitchExecute = () => { };
     private static Execute _raderSwitchExecute = () => { };
     private static Execute _playerQuickSwitchExecute = () => { };
@@ -130,7 +130,7 @@ public static class InputUtil
         Plugin.LOGGER.LogInfo(" > Setup actions");
 
         _doorSwitchExecute += script.ShipDoor;
-        //_trapTriggerExecute += script.TriggerTrap;
+        _selectTargetExecute += script.OnSelectTarget;
         _primaryExecute += () => script.OnPlayerInteraction(false);
         _secondaryExecute += () => script.OnPlayerInteraction(true);
         _playerSwitchExecute += () => script.OnMonitorQuickSwitch(false);
@@ -144,7 +144,7 @@ public static class InputUtil
         _primaryExecute = () => { };
         _secondaryExecute = () => { };
         _doorSwitchExecute = () => { };
-        //_trapTriggerExecute = () => { };
+        _selectTargetExecute = () => { };
         _playerSwitchExecute = () => { };
         _raderSwitchExecute = () => { };
         _playerQuickSwitchExecute = () => { };
@@ -161,7 +161,7 @@ public static class InputUtil
         {
             INPUT_PRIMARY.performed += _ => _primaryExecute();
             INPUT_SECONDARY.performed += _ => _secondaryExecute();
-            //INPUT_TRAP_TRIGGER.performed += _ => _trapTriggerExecute();
+            INPUT_SELECT_TARGET.performed += _ => _selectTargetExecute();
             INPUT_DOOR_SWITCH.performed += _ => _doorSwitchExecute();
             INPUT_QUICKSWITCH.performed += _ => _raderSwitchExecute();
             INPUT_ALT_QUICKSWITCH.performed += _ => _playerSwitchExecute();
@@ -201,11 +201,11 @@ public static class InputUtil
                 ConfigUtil.CONFIG_DOOR_SWITCH.Value,
                 _ => _doorSwitchExecute()
             );
-            //INPUT_TRAP_TRIGGER = CreateKeybind(
-            //    "MonitorEnhance:TrapTrigger",
-            //    ConfigUtil.CONFIG_TRAP_TRIGGER.Value,
-            //    _ => _trapTriggerExecute()
-            //);
+            INPUT_SELECT_TARGET = CreateKeybind(
+                "MonitorEnhance:SelectTarget",
+                ConfigUtil.CONFIG_SELECT_TARGET.Value,
+                _ => _selectTargetExecute()
+            );
             INPUT_ALT_QUICKSWITCH = CreateKeybind(
                 "MonitorEnhance:AltQuickSwitch",
                 ConfigUtil.CONFIG_ALT_QUICK_SWITCH.Value,

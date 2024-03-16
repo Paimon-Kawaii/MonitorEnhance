@@ -67,6 +67,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -113,6 +114,10 @@
       <HintPath>..\..\..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
@@ -129,6 +134,7 @@
       <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compatibility\MonitorEnhanceInputClass.cs" />
@@ -152,11 +158,9 @@
     <Compile Include="Utils\PlanetUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\CrossIcon.png" />
-    <Content Include="Images\DotIcon.png" />
-    <Content Include="Images\HoverIcon.png" />
-    <Content Include="Images\icon.png" />
-    <Content Include="Images\MonitorHover.png" />
+    <None Include="Resources\CrossIcon.png" />
+    <None Include="Resources\DotIcon.png" />
+    <EmbeddedResource Include="Resources\HoverIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Lang\en_US.resx">

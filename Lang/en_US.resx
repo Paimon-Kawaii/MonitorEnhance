@@ -141,6 +141,9 @@
   <data name="RightButton" xml:space="preserve">
     <value>RMB</value>
   </data>
+  <data name="SelectTarget" xml:space="preserve">
+    <value>Select current target</value>
+  </data>
   <data name="ShipDoor" xml:space="preserve">
     <value>ShipDoor</value>
   </data>
@@ -154,6 +157,6 @@
     <value>Teleport player</value>
   </data>
   <data name="TriggerTrap" xml:space="preserve">
-    <value>Close traps</value>
+    <value>Close clicked trap</value>
   </data>
 </root>
