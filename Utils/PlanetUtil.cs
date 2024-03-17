@@ -24,13 +24,14 @@ public static class PlanetUtil
                     return true;
             }
         }
+
         return false;
     }
 
     public static void CheckPlugins()
     {
-        Plugin.Supplier<bool> _lec = () => !LethalExpansionCore.LethalExpansion.Settings.UseOriginalLethalExpansion.Value;
-        if (Chainloader.PluginInfos.TryGetValue("com.github.lethalmods.lethalexpansioncore", out PluginInfo lec) && _lec.Invoke())
+        static bool _lec() => !LethalExpansionCore.LethalExpansion.Settings.UseOriginalLethalExpansion.Value;
+        if (Chainloader.PluginInfos.TryGetValue("com.github.lethalmods.lethalexpansioncore", out PluginInfo lec) && _lec())
         {
             _onPlanetCheck = x => x.Equals("InitSceneLaunchOptions") && LethalExpansionCore.LethalExpansion.isInGame;
             Plugin.LOGGER.LogInfo($" > Hooked into LethalExpansionCore {lec.Metadata.Version}");

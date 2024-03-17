@@ -71,8 +71,8 @@ public class Plugin : BaseUnityPlugin {
     {
         LOGGER = this.Logger;
         string pluginFolder = Path.Combine(Paths.PluginPath, "MonitorEnhance");
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.sceneUnloaded += OnSceneUnloaded;
+        SceneManager.sceneLoaded += this.OnSceneLoaded;
+        SceneManager.sceneUnloaded += this.OnSceneUnloaded;
 
         // Load config values
         ConfigUtil.Setup(this.Config, pluginFolder);
@@ -82,8 +82,8 @@ public class Plugin : BaseUnityPlugin {
         PlanetUtil.CheckPlugins();
 
         // GeneralImprovements support
-        Supplier<bool> _gi = () => GeneralImprovements.Plugin.UseBetterMonitors.Value;
-        if (Chainloader.PluginInfos.TryGetValue("ShaosilGaming.GeneralImprovements", out PluginInfo gi) && _gi.Invoke()) {
+        static bool _gi() => GeneralImprovements.Plugin.UseBetterMonitors.Value;
+        if (Chainloader.PluginInfos.TryGetValue("ShaosilGaming.GeneralImprovements", out PluginInfo gi) && _gi()) {
             CREATE_BOUNDS = x => new Bounds(
                 new Vector3(
                     x.transform.position.x + -.2f,

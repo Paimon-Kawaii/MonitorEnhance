@@ -5,28 +5,13 @@ namespace MonitorEnhance;
 internal static class MapCameraExtension
 {
     private static PlayerControllerB LOCAL_PLAYER => GameNetworkManager.Instance?.localPlayerController;
-    //public static FieldInfo updateMapCameraCoroutine = typeof(ManualCameraRenderer).GetField("updateMapCameraCoroutine", BindingFlags.NonPublic | BindingFlags.Instance);
-    //public static MethodInfo updateMapTarget = typeof(ManualCameraRenderer).GetMethod("updateMapTarget", BindingFlags.NonPublic | BindingFlags.Instance);
-
-    //private static int GetPlayerCount(this ManualCameraRenderer renderer)
-    //{
-    //    int count = 0;
-    //    for (int i = 0; i < renderer.radarTargets.Count; i++)
-    //    {
-    //        if (renderer.radarTargets[i].isNonPlayer) continue;
-    //        count++;
-    //    }
-
-    //    return count;
-    //}
 
     public static TransformAndName GetCurrentRadarTarget(this ManualCameraRenderer renderer)
     {
-        TransformAndName t = null;
         int i = renderer.targetTransformIndex;
 
         if (i < 0) return null;
-        t = renderer.radarTargets[i];
+        TransformAndName t = renderer.radarTargets[i];
 
         return t;
     }
@@ -38,10 +23,11 @@ internal static class MapCameraExtension
         {
             if (i == renderer.radarTargets.Count) i = 0;
 
-            var trans = renderer.radarTargets[i];
+            TransformAndName trans = renderer.radarTargets[i];
             if (trans?.transform.gameObject.activeSelf == true && trans?.isNonPlayer == false)
                 return i;
         }
+
         return renderer.targetTransformIndex;
     }
 
@@ -50,10 +36,11 @@ internal static class MapCameraExtension
         bool isNonPlayer = renderer.GetCurrentRadarTarget().isNonPlayer;
         for (int i = isNonPlayer ? (renderer.targetTransformIndex < renderer.radarTargets.Count - 1 ? renderer.targetTransformIndex + 1 : 0) : 0; i < renderer.radarTargets.Count; i++)
         {
-            var trans = renderer.radarTargets[i];
+            TransformAndName trans = renderer.radarTargets[i];
             if (trans?.transform.gameObject.activeSelf == true && trans?.isNonPlayer == true)
                 return i;
         }
+
         return renderer.targetTransformIndex;
     }
 
@@ -80,8 +67,10 @@ internal static class MapCameraExtension
                     renderer.SwitchRadarTargetAndSync(index);
                     return;
                 }
+
                 index++;
             }
+
             return;
         }
 
@@ -99,6 +88,7 @@ internal static class MapCameraExtension
                 }
                 else if (count > target) return;
             }
+
             index++;
         }
     }

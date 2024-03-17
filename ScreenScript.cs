@@ -13,13 +13,13 @@ public class ScreenScript : MonoBehaviour
     private static TransformAndName RADAR_TARGET => MAP_RENDERER.GetCurrentRadarTarget();
     private TransformAndName _selectedTarget;
     private const float _isCloseMax = 2f;
-    private bool _lookingAtMonitor = false;
-    private bool _targetSelected = false;
+    private bool _isLookingAtMonitor = false;
+    private bool _isTargetSelected = false;
     private float _tpCoolDown = 0f;
     
     private Bounds GetMonitorScreenBounds()
     {
-        return Plugin.CREATE_BOUNDS.Invoke(gameObject);
+        return Plugin.CREATE_BOUNDS.Invoke(this.gameObject);
     }
 
     private bool GetMonitorCameraRay(out Ray camRay)
@@ -27,15 +27,16 @@ public class ScreenScript : MonoBehaviour
         PlayerControllerB ply = LOCAL_PLAYER;
         if (ply is not null && ply.isInHangarShipRoom)
         {
-            Ray lookRay = new Ray(ply.gameplayCamera.transform.position, ply.gameplayCamera.transform.forward);
-            Bounds bounds = GetMonitorScreenBounds();
+            Ray lookRay = new(ply.gameplayCamera.transform.position, ply.gameplayCamera.transform.forward);
+            Bounds bounds = this.GetMonitorScreenBounds();
 
             if (bounds.IntersectRay(lookRay, out float distance) && distance <= ply.grabDistance)
             {
-                camRay = MAP_RENDERER.cam.ViewportPointToRay(GetMonitorCoordinates(bounds, lookRay.GetPoint(distance)));
+                camRay = MAP_RENDERER.cam.ViewportPointToRay(this.GetMonitorCoordinates(bounds, lookRay.GetPoint(distance)));
                 return true;
             }
         }
+
         camRay = default;
         return false;
     }
@@ -45,13 +46,13 @@ public class ScreenScript : MonoBehaviour
         PlayerControllerB player = LOCAL_PLAYER;
         if (player is not null && player.isInHangarShipRoom)
         {
-            Ray lookRay = new Ray(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward);
-            Bounds bounds = GetMonitorScreenBounds();
+            Ray lookRay = new(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward);
+            Bounds bounds = this.GetMonitorScreenBounds();
 
-            float distance;
-            if (bounds.IntersectRay(lookRay, out distance) && distance <= player.grabDistance * 1.5f)
+            if (bounds.IntersectRay(lookRay, out float distance) && distance <= player.grabDistance * 1.5f)
                 return true;
         }
+
         return false;
     }
 
@@ -66,31 +67,31 @@ public class ScreenScript : MonoBehaviour
 
     internal void OnSelectTarget()
     {
-        if (!(Plugin.IsActive && _lookingAtMonitor)) return;
+        if (!(Plugin.IsActive && _isLookingAtMonitor)) return;
 
         TransformAndName target = RADAR_TARGET;
         if (target is null) return;
 
         _selectedTarget = target;
-        _targetSelected = true;
+        _isTargetSelected = true;
     }
 
     internal void OnPlayerInteraction(bool isSecondary)
     {
-        if (!(Plugin.IsActive && _lookingAtMonitor)) return;
+        if (!(Plugin.IsActive && _isLookingAtMonitor)) return;
 
         PlayerControllerB player = LOCAL_PLAYER;
         if (player is null) return;
 
-        if (_targetSelected)
+        if (_isTargetSelected)
         {
             TransformAndName target = _selectedTarget;
             if (target.isNonPlayer)
-                TriggerRadar(target.transform.GetComponent<RadarBoosterItem>(), isSecondary);
-            else if (!isSecondary) Teleport();
-            else TriggerTrap();
+                this.TriggerRadar(target.transform.GetComponent<RadarBoosterItem>(), isSecondary);
+            else if (!isSecondary) this.Teleport();
+            else this.TriggerTrap();
         }
-        else if (isSecondary) TriggerTrap();
+        else if (isSecondary) this.TriggerTrap();
 
         #region 原逻辑
         //if (player != null && IsLookingAtMonitor(out Bounds bounds, out Ray lookRay, out Ray camRay))
@@ -148,7 +149,7 @@ public class ScreenScript : MonoBehaviour
         Plugin.LOGGER.LogInfo($"> 传送: {target.name}");
         if (target is null) return;
 
-        var cooldownTime = (float)typeof(ShipTeleporter).GetField("cooldownTime", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(shipTeleporter);
+        float cooldownTime = (float)typeof(ShipTeleporter).GetField("cooldownTime", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(shipTeleporter);
         if (cooldownTime > 5.0f)
             return;
 
@@ -157,10 +158,9 @@ public class ScreenScript : MonoBehaviour
 
     private void TriggerTrap()
     {
-        if (!(Plugin.IsActive && _lookingAtMonitor)) return;
+        if (!(Plugin.IsActive && _isLookingAtMonitor)) return;
 
-        Ray camRay;
-        if (!GetMonitorCameraRay(out camRay)) return;
+        if (!this.GetMonitorCameraRay(out Ray camRay)) return;
 
         foreach (Collider collider in Physics.OverlapCapsule(camRay.GetPoint(0), camRay.GetPoint(10), _isCloseMax))
             if (collider.GetComponent<TerminalAccessibleObject>() is TerminalAccessibleObject trap)
@@ -202,7 +202,7 @@ public class ScreenScript : MonoBehaviour
 
     internal void ShipDoor()
     {
-        if (!(Plugin.IsActive && _lookingAtMonitor)) return;
+        if (!(Plugin.IsActive && _isLookingAtMonitor)) return;
 
         GameObject shipdoor = FindObjectOfType<HangarShipDoor>().gameObject;
         string animation = "CloseDoor";
@@ -216,12 +216,12 @@ public class ScreenScript : MonoBehaviour
 
     internal void OnMonitorQuickSwitch(bool isPlayer)
     {
-        if (!(Plugin.IsActive && _lookingAtMonitor)) return;
+        if (!(Plugin.IsActive && _isLookingAtMonitor)) return;
 
         PlayerControllerB player = LOCAL_PLAYER;
         if (player?.isInHangarShipRoom == true)
         {
-            Vector3 vec = gameObject.transform.position - player.transform.position;
+            Vector3 vec = this.gameObject.transform.position - player.transform.position;
             float distance = Math.Abs(vec.x) + Math.Abs(vec.y) + Math.Abs(vec.z);
             if (distance < 10f)
             {
@@ -233,7 +233,7 @@ public class ScreenScript : MonoBehaviour
 
     internal void OnPlayerQuickSwitchByNum()
     {
-        if (!(Plugin.IsActive && _lookingAtMonitor)) return;
+        if (!(Plugin.IsActive && _isLookingAtMonitor)) return;
 
         if (InputUtil.INPUT_QUICKSWITCH_1.IsPressed())
             MAP_RENDERER.SwitchRadarTargetByNum(1);
@@ -285,8 +285,8 @@ public class ScreenScript : MonoBehaviour
         player.isGrabbingObjectAnimation = false;
         if (!Plugin.IsActive) return;
 
-        _lookingAtMonitor = IsLookingAtMonitor();
-        if (_lookingAtMonitor)
+        _isLookingAtMonitor = this.IsLookingAtMonitor();
+        if (_isLookingAtMonitor)
         {
             player.isGrabbingObjectAnimation = true; // Blocks the default code from overwriting it again
 
@@ -302,21 +302,21 @@ public class ScreenScript : MonoBehaviour
             player.cursorIcon.enabled = true;
             player.cursorIcon.sprite = ConfigUtil.HOVER_ICON;
 
-            if (_targetSelected && RADAR_TARGET != _selectedTarget)
-                _targetSelected = false;
+            if (_isTargetSelected && RADAR_TARGET != _selectedTarget)
+                _isTargetSelected = false;
 
             if (ConfigUtil.CONFIG_SHOW_TOOLTIP.Value)
             {
                 // Display Tooltips
                 TransformAndName target = _selectedTarget;
-                if (!_targetSelected) target = RADAR_TARGET;
+                if (!_isTargetSelected) target = RADAR_TARGET;
 
                 player.cursorTip.text =
                     $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_DOOR_SWITCH)} ] " +
                         (StartOfRound.Instance.hangarDoorsClosed ? LocalizationManager.GetString("Open") : LocalizationManager.GetString("Close")) +
                         " " + LocalizationManager.GetString("ShipDoor") + "\n" +
 
-                    (_targetSelected ? ($"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_PRIMARY)} ] " +
+                    (_isTargetSelected ? ($"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_PRIMARY)} ] " +
                                             (target.isNonPlayer ? LocalizationManager.GetString("PingRadar") : LocalizationManager.GetString("TPPlayer")) + "\n" +
 
                         $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_SECONDARY)} ] " +

@@ -19,12 +19,12 @@ public static class InputUtil
             if (value)
             { 
                 // Script is not null / was enabled
-                    setupActions(value);
+                    SetupActions(value);
             }
             else
             {
                 // Script is null / was disabled
-                clearActions();
+                ClearActions();
             }
 
             _screen_script = value;
@@ -114,7 +114,7 @@ public static class InputUtil
 
     private static InputAction CreateKeybind(string key, string binding, Action<InputAction.CallbackContext> action)
     {
-        InputAction inputAction = new InputAction(
+        InputAction inputAction = new(
             name: key,
             type: InputActionType.Button,
             binding: binding
@@ -125,7 +125,7 @@ public static class InputUtil
         return inputAction;
     }
 
-    private static void setupActions(ScreenScript script)
+    private static void SetupActions(ScreenScript script)
     {
         Plugin.LOGGER.LogInfo(" > Setup actions");
 
@@ -138,7 +138,7 @@ public static class InputUtil
         _playerQuickSwitchExecute += script.OnPlayerQuickSwitchByNum;
     }
 
-    private static void clearActions()
+    private static void ClearActions()
     {
         Plugin.LOGGER.LogInfo(" > Clear actions");
         _primaryExecute = () => { };
@@ -156,8 +156,8 @@ public static class InputUtil
     internal static void Setup()
     {
         // Create keybinds
-        Plugin.Supplier<bool> _iu_create = () => MonitorEnhanceInputClass.Instance != null;
-        if (Chainloader.PluginInfos.TryGetValue("com.rune580.LethalCompanyInputUtils", out PluginInfo iu) && _iu_create.Invoke())
+        static bool _iu_create() => MonitorEnhanceInputClass.Instance != null;
+        if (Chainloader.PluginInfos.TryGetValue("com.rune580.LethalCompanyInputUtils", out PluginInfo iu) && _iu_create())
         {
             INPUT_PRIMARY.performed += _ => _primaryExecute();
             INPUT_SECONDARY.performed += _ => _secondaryExecute();

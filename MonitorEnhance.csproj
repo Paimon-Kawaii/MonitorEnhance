@@ -172,5 +172,10 @@
       <LastGenOutput>zh_CN.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\CrossIcon-new.png" />
+    <Content Include="Resources\DotIcon-new.png" />
+    <EmbeddedResource Include="Resources\HoverIcon-new.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

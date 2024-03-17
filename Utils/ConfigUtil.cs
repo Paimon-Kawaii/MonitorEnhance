@@ -1,13 +1,9 @@
-using System;
 using System.IO;
 using System.Reflection;
-using System.Xml.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using MonitorEnhance.Utils;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UI;
 
 namespace MonitorEnhance;
 
@@ -171,11 +167,11 @@ public static class ConfigUtil
             """, pluginFolder)
         );
 
-        bool flag  =CONFIG_LANGUAGE.Value.IsNullOrWhiteSpace();
-        Plugin.LOGGER.LogInfo($"[me] 语言: {CONFIG_LANGUAGE.Value}");
+        bool flag = CONFIG_LANGUAGE.Value.IsNullOrWhiteSpace();
+        Plugin.LOGGER.LogInfo($"> 语言: {CONFIG_LANGUAGE.Value}");
         LocalizationManager.SetLanguage(flag? System.Globalization.CultureInfo.InstalledUICulture.Name: CONFIG_LANGUAGE.Value);
         // Try to resolve imagePath to full path
-        string iconPath;
+        //string iconPath;
         //if (imagePath.Value.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || imagePath.Value.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
         //{
         //    // Check if provided imagePath is relative file name or full path
@@ -204,27 +200,12 @@ public static class ConfigUtil
                 new Vector2(.5f, .5f),
                 100f
             );
-        }
-        Plugin.LOGGER.LogWarning(" > =======图片结束开始======== ");
 
-        //Plugin.LOGGER.LogWarning(" > =======URI测试开始======== ");
-        //// Load hover icon
-        //if (sth balabala...)
-        //{
-        //    UnityWebRequest req = UnityWebRequestTexture.GetTexture(Utility.ConvertToWWWFormat("/Resource/HoverIcon.png"));
-        //    Plugin.LOGGER.LogWarning(" > =======URI测试结束======== ");
-        //    req.SendWebRequest().completed += _ =>
-        //    {
-        //        Texture2D tex = DownloadHandlerTexture.GetContent(req);
-        //        HOVER_ICON = Sprite.Create(
-        //            tex,
-        //            new Rect(0f, 0f, tex.width, tex.height),
-        //            new Vector2(.5f, .5f),
-        //            100f
-        //        );
-        //    };
-        //}
-        //else Plugin.LOGGER.LogWarning(" > 图标错误！ ");
+            stream.Dispose();
+            stream.Close();
+        }
+
+        Plugin.LOGGER.LogWarning(" > =======图片结束开始======== ");
     }
 
     private static byte[] StreamToBytes(Stream stream)
