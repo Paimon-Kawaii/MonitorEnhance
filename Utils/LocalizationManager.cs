@@ -11,6 +11,7 @@ public class LocalizationManager
     public static Dictionary<string, Type> Languages { get; set; } = new()
     {
         { "en_us", typeof(en_US) },
+        { "ko_kr", typeof(ko_KR) },
         { "zh_cn", typeof(zh_CN) }
     };
 

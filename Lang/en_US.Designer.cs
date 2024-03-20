@@ -61,7 +61,7 @@ namespace MonitorEnhance.Lang {
         }
         
         /// <summary>
-        ///   查找类似 Close 的本地化字符串。
+        ///   查找类似 Close  的本地化字符串。
         /// </summary>
         internal static string Close {
             get {
@@ -106,7 +106,7 @@ namespace MonitorEnhance.Lang {
         }
         
         /// <summary>
-        ///   查找类似 Open 的本地化字符串。
+        ///   查找类似 Open  的本地化字符串。
         /// </summary>
         internal static string Open {
             get {

@@ -49,21 +49,18 @@ public class ScreenScript : MonoBehaviour
             Ray lookRay = new(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward);
             Bounds bounds = this.GetMonitorScreenBounds();
 
-            if (bounds.IntersectRay(lookRay, out float distance) && distance <= player.grabDistance * 1.5f)
+            if (bounds.IntersectRay(lookRay, out float distance) && distance <= player.grabDistance * 1.5f) 
                 return true;
         }
 
         return false;
     }
 
-    private Vector3 GetMonitorCoordinates(Bounds bounds, Vector3 point)
-    {
-        return new Vector3(
+    private Vector3 GetMonitorCoordinates(Bounds bounds, Vector3 point) => new(
             1f - 1f / Math.Abs(bounds.max.z - bounds.min.z) * (point.z - bounds.min.z),
             1f / Math.Abs(bounds.max.y - bounds.min.y) * (point.y - bounds.min.y),
             0
         );
-    }
 
     internal void OnSelectTarget()
     {
@@ -77,7 +74,7 @@ public class ScreenScript : MonoBehaviour
     }
 
     internal void OnPlayerInteraction(bool isSecondary)
-    {
+    {   
         if (!(Plugin.IsActive && _isLookingAtMonitor)) return;
 
         PlayerControllerB player = LOCAL_PLAYER;
@@ -161,44 +158,29 @@ public class ScreenScript : MonoBehaviour
         if (!(Plugin.IsActive && _isLookingAtMonitor)) return;
 
         if (!this.GetMonitorCameraRay(out Ray camRay)) return;
-
         foreach (Collider collider in Physics.OverlapCapsule(camRay.GetPoint(0), camRay.GetPoint(10), _isCloseMax))
             if (collider.GetComponent<TerminalAccessibleObject>() is TerminalAccessibleObject trap)
                 trap.CallFunctionFromTerminal(); // Clicked on BigDoor, Land mine, Turret
 
         #region 旧逻辑
-        //PlayerControllerB player = target.transform.GetComponent<PlayerControllerB>();
-        //if (player is null) return;
+        TransformAndName target = _selectedTarget;
+        if (target is null) return;
+        PlayerControllerB player = target.transform.GetComponent<PlayerControllerB>();
+        if (player is null) return;
 
-        //Vector2 pVec = new Vector2(target.transform.position.collider, target.transform.position.y);
-        //TerminalAccessibleObject[] traps = FindObjectsOfType<TerminalAccessibleObject>();
-        //foreach (TerminalAccessibleObject trap in traps)
-        //{
-        //    if (trap.isBigDoor) continue;
-        //    Vector2 tVec = new Vector2(trap.transform.position.collider, trap.transform.position.y);
-        //    float distance = (pVec - tVec).magnitude;
-        //    Plugin.LOGGER.LogInfo($"> [{trap.objectCode}] 与 {player.name} 距离: {distance}");
-        //    if (distance <= player.grabDistance * 4f)
-        //        trap.CallFunctionFromTerminal();
-        //}
+        Vector2 pVec = new(target.transform.position.x, target.transform.position.y);
+        TerminalAccessibleObject[] traps = FindObjectsOfType<TerminalAccessibleObject>();
+        foreach (TerminalAccessibleObject trap in traps)
+        {
+            if (trap.isBigDoor) continue;
+            Vector2 tVec = new(trap.transform.position.x, trap.transform.position.y);
+            float distance = (pVec - tVec).magnitude;
+            Plugin.LOGGER.LogInfo($"> [{trap.objectCode}] 与 {player.name} 距离: {distance}");
+            if (distance <= player.grabDistance * 4f)
+                trap.CallFunctionFromTerminal();
+        }
         #endregion
     }
-
-    //    internal void EmergencyTeleport()
-    //    {
-    //        if (_tpCoolDown > 0) return;
-
-    //        TransformAndName target = RADAR_TARGET;
-    //        PlayerControllerB player = target?.transform.GetComponent<PlayerControllerB>();
-    //        if (player is null) return;
-
-    //        StartCoroutine(TeleportPlayerCoroutine((int)player.playerClientId, LOCAL_PLAYER.transform.position));
-
-    //        _tpCoolDown = 20f;
-    //#if DEBUG
-    //            _tpCoolDown = 2f;
-    //#endif
-    //    }
 
     internal void ShipDoor()
     {
@@ -219,15 +201,12 @@ public class ScreenScript : MonoBehaviour
         if (!(Plugin.IsActive && _isLookingAtMonitor)) return;
 
         PlayerControllerB player = LOCAL_PLAYER;
-        if (player?.isInHangarShipRoom == true)
+        Vector3 vec = this.gameObject.transform.position - player.transform.position;
+        float distance = Math.Abs(vec.x) + Math.Abs(vec.y) + Math.Abs(vec.z);
+        if (distance < 10f)
         {
-            Vector3 vec = this.gameObject.transform.position - player.transform.position;
-            float distance = Math.Abs(vec.x) + Math.Abs(vec.y) + Math.Abs(vec.z);
-            if (distance < 10f)
-            {
-                if (isPlayer) MAP_RENDERER.SwitchMonitorPlayer();
-                else MAP_RENDERER.SwitchMonitorRadar();
-            }
+            if (isPlayer) MAP_RENDERER.SwitchMonitorPlayer();
+            else MAP_RENDERER.SwitchMonitorRadar();
         }
     }
 
@@ -267,8 +246,6 @@ public class ScreenScript : MonoBehaviour
             Plugin.LOGGER.LogWarning("Unable to activate monitor touchscreen. Reason: Failed to get local player.");
             return;
         }
-        else if (InputUtil.INPUT_PRIMARY != null || InputUtil.INPUT_SECONDARY != null)
-            return;
     }
 
     private void OnDisable()
@@ -305,29 +282,34 @@ public class ScreenScript : MonoBehaviour
             if (_isTargetSelected && RADAR_TARGET != _selectedTarget)
                 _isTargetSelected = false;
 
+            if(!ConfigUtil.SELECT_REQUIRE)
+            {
+                _selectedTarget = RADAR_TARGET;
+                _isTargetSelected = true;
+            }
+
             if (ConfigUtil.CONFIG_SHOW_TOOLTIP.Value)
             {
                 // Display Tooltips
                 TransformAndName target = _selectedTarget;
                 if (!_isTargetSelected) target = RADAR_TARGET;
 
-                player.cursorTip.text =
-                    $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_DOOR_SWITCH)} ] " +
-                        (StartOfRound.Instance.hangarDoorsClosed ? LocalizationManager.GetString("Open") : LocalizationManager.GetString("Close")) +
-                        " " + LocalizationManager.GetString("ShipDoor") + "\n" +
+                player.cursorTip.text = string.Empty;
+                player.cursorTip.text += $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_DOOR_SWITCH)} ] "
+                    + (StartOfRound.Instance.hangarDoorsClosed ? LocalizationManager.GetString("Open") : LocalizationManager.GetString("Close"))
+                    + LocalizationManager.GetString("ShipDoor") + "\n";
 
-                    (_isTargetSelected ? ($"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_PRIMARY)} ] " +
-                                            (target.isNonPlayer ? LocalizationManager.GetString("PingRadar") : LocalizationManager.GetString("TPPlayer")) + "\n" +
+                player.cursorTip.text +=
+                    _isTargetSelected ? ($"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_PRIMARY)} ] "
+                        + (target.isNonPlayer ? LocalizationManager.GetString("PingRadar") : LocalizationManager.GetString("TPPlayer")) + "\n"
+                        + $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_SECONDARY)} ] "
+                        + (target.isNonPlayer ? LocalizationManager.GetString("FlashRadar") : LocalizationManager.GetString("TriggerTrap")) + "\n")
+                    : ($"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_SELECT_TARGET)} ] " + LocalizationManager.GetString("SelectTarget") + "\n"
+                        + $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_SECONDARY)} ] " + LocalizationManager.GetString("TriggerTrap") + "\n");
 
-                        $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_SECONDARY)} ] " +
-                                (target.isNonPlayer ? LocalizationManager.GetString("FlashRadar") : LocalizationManager.GetString("TriggerTrap")) + "\n") :
-                                $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_SELECT_TARGET)} ] " + LocalizationManager.GetString("SelectTarget") + "\n" +
-                                $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_SECONDARY)} ] " + LocalizationManager.GetString("TriggerTrap") + "\n"
-                    ) +
+                player.cursorTip.text += $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_QUICKSWITCH)} & 0-9 ] " + LocalizationManager.GetString("SwitchPlayer") + "\n";
 
-                    $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_QUICKSWITCH)} & 0-9 ] " + LocalizationManager.GetString("SwitchPlayer") + "\n" +
-
-                    $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_ALT_QUICKSWITCH)} ] " + LocalizationManager.GetString("SwitchRadar") + "\n";
+                player.cursorTip.text += $"[ {InputUtil.GetButtonDescription(InputUtil.INPUT_ALT_QUICKSWITCH)} ] " + LocalizationManager.GetString("SwitchRadar") + "\n";
             }
         }
     }

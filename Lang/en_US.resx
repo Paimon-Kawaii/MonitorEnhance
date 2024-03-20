@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Close" xml:space="preserve">
-    <value>Close</value>
+    <value>Close </value>
   </data>
   <data name="FlashRadar" xml:space="preserve">
     <value>Flash radar</value>
@@ -133,7 +133,7 @@
     <value>LeftShift</value>
   </data>
   <data name="Open" xml:space="preserve">
-    <value>Open</value>
+    <value>Open </value>
   </data>
   <data name="PingRadar" xml:space="preserve">
     <value>Ping radar</value>

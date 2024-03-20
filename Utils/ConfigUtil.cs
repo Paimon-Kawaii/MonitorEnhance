@@ -45,6 +45,10 @@ public static class ConfigUtil
     //{
     //    get; private set;
     //}
+    public static ConfigEntry<bool> CONFIG_SELECT_REQUIRE
+    {
+        get; private set;
+    }
     public static ConfigEntry<bool> CONFIG_SHOW_TOOLTIP
     {
         get; private set;
@@ -55,6 +59,7 @@ public static class ConfigUtil
     }
 
     public static bool IGNORE_OVERRIDE { get; private set; } = false;
+    public static bool SELECT_REQUIRE { get; private set; } = true;
 
     internal static void Setup(ConfigFile config, string pluginFolder)
     {
@@ -131,7 +136,16 @@ public static class ConfigUtil
             For in depth instructions see: https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/api/UnityEngine.InputSystem.InputControlPath.html
             """
         );
-
+        CONFIG_SELECT_REQUIRE = config.Bind(
+            "Features", "SelectRequire",
+            true,
+            """
+            Set if select required.
+             > "true": Functions need select target to call
+             > "false": Functions noneed select target to call
+            """
+        );
+        SELECT_REQUIRE = CONFIG_SELECT_REQUIRE.Value;
         // Image
         IGNORE_OVERRIDE = config.Bind(
             "Features", "IgnoreOverride",
@@ -170,7 +184,8 @@ public static class ConfigUtil
         bool flag = CONFIG_LANGUAGE.Value.IsNullOrWhiteSpace();
         Plugin.LOGGER.LogInfo($"> ”Ô—‘: {CONFIG_LANGUAGE.Value}");
         LocalizationManager.SetLanguage(flag? System.Globalization.CultureInfo.InstalledUICulture.Name: CONFIG_LANGUAGE.Value);
-        // Try to resolve imagePath to full path
+
+        //// Try to resolve imagePath to full path
         //string iconPath;
         //if (imagePath.Value.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || imagePath.Value.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
         //{
